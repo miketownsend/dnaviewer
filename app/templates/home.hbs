@@ -1,7 +1,19 @@
-<h1>{{name}}</h1>
+<div class="container">
 
-<ul>
-{{#each item in featureViewModels}}
-	<li>{{item.marker.dnafeature.name}}</li>
-{{/each}}
-</ul>
+<div class="row">
+	<div class="col-md-12">
+		<h1>{{name}}</h1>
+	</div>
+</div>
+
+<div  class="row">
+	<div id="filter" class="col-md-4 pull-right">
+		{{input value=filter class="form-control" placeholder="Filter Features"}}
+	</div>
+</div>
+
+{{render "diagram" featureViewModels}}
+
+{{render "table" featureViewModels}}
+
+</div>
