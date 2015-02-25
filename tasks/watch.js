@@ -27,7 +27,7 @@ module.exports = {
   },
   vendor: {
     files: [
-      'vendor/**/*.*'
+      'bower_components/**/*.*'
     ],
     tasks: ['clean:vendor', 'copy:vendor'],
     options: {

@@ -44,11 +44,11 @@ module.exports = {
 	vendor: {
 		files: [{
 			expand: true,
-			cwd: 'vendor/',
+			cwd: 'bower_components/',
 			src: [
 				'**/*.*'
 			],
-			dest: 'tmp/vendor/'
+			dest: 'tmp/bower_components/'
 		}]
 	},
 	templates: {
