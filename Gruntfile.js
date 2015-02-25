@@ -13,7 +13,7 @@ module.exports = function( grunt ) {
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 	grunt.loadTasks('tasks');
 
-  	grunt.registerTask('server', "Run app locally and watch for changes", [
+  	grunt.registerTask('serve', "Run app locally and watch for changes", [
 		'build',
 		'connect:app',
 		'watch'

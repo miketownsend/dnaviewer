@@ -4,5 +4,6 @@ var App = Ember.Application.create({
 });
 App.Enums = {};
 App.Config = {};
-
-App.adapter = Ember.FixtureAdapter.create();
+App.Router.map(function() { 
+	this.route('home', { path: "/" });
+});
