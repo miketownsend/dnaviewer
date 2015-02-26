@@ -5,5 +5,5 @@ var App = Ember.Application.create({
 App.Enums = {};
 App.Config = {};
 App.Router.map(function() { 
-	this.route('home', { path: "/" });
+	this.route('dna-inspector', { path: "/" });
 });

@@ -1,0 +1,1 @@
+App.PlasmidDiagramView = Ember.View.create();

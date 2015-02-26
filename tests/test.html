@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DNA Viewer</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="app/styles/styles.css">
+  </head>
+  <body>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="bower_components/handlebars/handlebars.js"></script>
+    <script src="bower_components/ember/ember.js"></script>
+    <script src="bower_components/ember-model/ember-model.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+
+    <script src="app/helpers/handlebars.js"></script>
+
+    <script src="app/app.js"></script>
+
+    <script src="app/models/dna-feature-category.js"></script>
+    <script src="app/models/dna-feature-marker.js"></script>
+    <script src="app/models/dna-feature-pattern.js"></script>
+    <script src="app/models/dna-feature-property.js"></script>
+    <script src="app/models/dna-feature-symbol.js"></script>
+    <script src="app/models/dna-feature.js"></script>
+    <script src="app/models/dna-molecule.js"></script>
+
+    <script src="app/view-models/dna-feature-marker.js"></script>
+
+    <script src="app/controllers/dna-inspector.js"></script>
+    <script src="app/controllers/diagram.js"></script>
+    <script src="app/controllers/table.js"></script>
+    <script src="app/controllers/feature.js"></script>
+    <script src="app/controllers/feature-table-row.js"></script>
+    <script src="app/controllers/feature-details.js"></script>
+    
+    <script src="app/fixtures/dna-molecule.js"></script>
+
+    <script src="app/views/feature-table-row.js"></script>
+    
+    <script src="app/routes/dna-inspector.js"></script>
+    <script src="app/templates.js"></script>
+
+    <link rel="stylesheet" href="bower_components/qunit/qunit/qunit.css">
+    <link rel="stylesheet" href="tests/test.css">
+
+    <script src="bower_components/qunit/qunit/qunit.js"></script>
+    <script src="tests/test_initialiser.js"></script>
+    <script src="tests/tests.js"></script>
+
+    <div id="ember-testing-container">
+      <div id="qunit"></div>
+      <div id="qunit-fixture"></div>
+    </div>
+
+  	<script>
+	  	setTimeout(function () {
+	   		$('#qunit-header').on('click', function () { $('#ember-testing-container').toggleClass('minimize'); });
+	   	}, 1000);
+  	</script>
+  </body>
+</html>

@@ -50,5 +50,13 @@ module.exports = {
       livereload: true,
       nospawn: true
     }
-  }
+  },
+  tests: {
+    files: ['tests/**/*.*'],
+    tasks: ['clean:tests', 'concat', 'copy:tests'],
+    options: {
+      livereload: true,
+      nospawn: true
+    }
+  },
 };

@@ -1,0 +1,17 @@
+#ember-testing-container {
+  position: fixed;
+  background: white;
+  bottom: 0;
+  right: 0;
+  width: 70%;
+  height: 500px;
+  overflow: auto;
+  z-index: 9999;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-radius: 8px 0 0 0;
+}
+
+#ember-testing-container.minimize {
+	bottom: -460px;
+}

@@ -1,12 +1,12 @@
 App.FeatureTableRowController = App.FeatureController.extend({
-	needs: ["home"],
+	needs: ["dna-inspector"],
 	actions: {
 		toggleVisibility: function () {
 			this.toggleProperty('isVisible');
 		},
 		toggleSelection: function () {
-			var homeController = this.get('controllers.home');
-			homeController.send('selectFeature', this.get('model'), false);
+			var dnaInspectorController = this.get('controllers.home');
+			dnaInspectorController.send('selectFeature', this.get('model'), false);
 		}
 	}
 });

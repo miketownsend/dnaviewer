@@ -13,10 +13,16 @@ module.exports = function( grunt ) {
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 	grunt.loadTasks('tasks');
 
-  	grunt.registerTask('serve', "Run app locally and watch for changes", [
+  	grunt.registerTask('serve', "Run app locally and watch for changes.", [
 		'build',
 		'connect:app',
 		'watch'
+	]);
+
+  	grunt.registerTask('test', "Run qunit tests in phantom.", [
+		'build',
+		'connect:app',
+		'qunit'
 	]);
 
 	grunt.registerTask('build','Build local dev copy',function(){
@@ -28,6 +34,8 @@ module.exports = function( grunt ) {
 			'copy:app',
 			'copy:vendor',
 			'copy:assets',
+			'concat',
+			'copy:tests'
 		]);
 	});
 };

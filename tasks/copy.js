@@ -53,5 +53,24 @@ module.exports = {
 	},
 	templates: {
 		'tmp/template.html': 'app/template.html'
-	}
+	},
+	tests: {
+		files: [
+			{
+				expand: true,
+				cwd: 'tests/',
+				src: [
+					'test_initialiser.js',
+					'test.css',
+				],
+				dest: 'tmp/tests/'
+			},
+			{
+				expand: true,
+				cwd: 'tests/',
+				src: ['test.html'],
+				dest: 'tmp/'
+			}
+		]
+	},
 };

@@ -1,4 +1,4 @@
-App.HomeController = Ember.ObjectController.extend({
+App.DnaInspectorController = Ember.ObjectController.extend({
 
 	filter: null,
 	selectedViewModel: null,
@@ -23,10 +23,11 @@ App.HomeController = Ember.ObjectController.extend({
 	filterViewModels: function () {
 		var filter = this.get('filter');
 		var features = this.get('featureViewModels');
+
 		features.forEach(function (featureViewModel) {
 			if( !filter ) featureViewModel.set('isVisible', true);
-			var name = featureViewModel.get('marker.dnafeature.name');
-			featureViewModel.set('isVisible', name.indexOf(filter) != -1);
+			var name = featureViewModel.get('marker.dnafeature.name').toLowerCase();
+			featureViewModel.set('isVisible', name.indexOf(filter.toLowerCase()) != -1);
 		});
 	}.observes('filter'),
 
