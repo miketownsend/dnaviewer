@@ -4,4 +4,6 @@ App.DnaFeatureMarkerViewModel = Ember.Object.extend({
 	isHovered: null,
 	isSelected: null,
 	isFilteredOut: null,
+	positionX: null,
+	positionY: null
 });

@@ -1,24 +1,22 @@
-<div id="feature-table" class="row">
-	<div class="col-md-12">
-		<div class="feature-table-wrapper">	
-			<ul class="feature-table-header">
-				<li>
-					<span><i class="fa fa-check-square-o"></i></span>
-					<span>Name</span>
-					<span>Type</span>
-					<span>Start</span>
-					<span>End</span>
-					<span>Strand</span>
-					<span>Size</span>
-				</li>
-			</ul>
-			<ul class="feature-table-content">
-				{{#each}}
-					{{#if isVisible}}
-						{{render "feature-table-row" this}}
-					{{/if}}
-				{{/each}}
-			</ul>
-		</div>
+<div id="feature-table">
+	<div class="feature-table-wrapper">	
+		<ul class="feature-table-header">
+			<li>
+				<span><i class="fa fa-check-square-o"></i></span>
+				<span>Name</span>
+				<span>Type</span>
+				<span>Start</span>
+				<span>End</span>
+				<span>Strand</span>
+				<span>Size</span>
+			</li>
+		</ul>
+		<ul class="feature-table-content">
+			{{#each}}
+				{{#if isVisible}}
+					{{render "feature-table-row" this}}
+				{{/if}}
+			{{/each}}
+		</ul>
 	</div>
 </div>

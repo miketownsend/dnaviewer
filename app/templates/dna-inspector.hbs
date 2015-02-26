@@ -1,18 +1,17 @@
 <div class="container">
 
+{{render "plasmid-diagram" featureViewModels}}
+
 <div class="row">
 	<div class="col-md-12">
 		<h1>{{name}}</h1>
 	</div>
 </div>
 
-<div  class="row">
-	<div id="filter" class="col-md-4 pull-right">
-		{{input value=filter class="form-control" placeholder="Filter Features"}}
-	</div>
+<div id="filter">
+	{{input value=filter class="form-control" placeholder="Filter Features"}}
+	<i class="fa fa-filter"></i>
 </div>
-
-{{render "diagram" featureViewModels}}
 
 {{render "table" featureViewModels}}
 

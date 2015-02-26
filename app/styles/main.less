@@ -3,13 +3,20 @@ body {
 	font-size: 12pt;
 }
 
+@text-color-fade:		#aaaaaa;
 @border-width: 			1px;
 @border-color: 			#dddddd;
-@background-subtle: 	#f8f8f8;
-@background-highlight: 	#f9f2f4;
+@background-color:		rgba(255,255,255,0.9);
+@background-subtle: 	rgba(248,248,248, 0.9);
+@background-highlight: 	rgba(250,230,232, 0.9);
 
 #feature-table {
-	margin-bottom: 20px;
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	width: 60%;
+	min-width: 800px;
+	background-color: @background-color;
 
 	ul {
 		border-radius: 4px;
@@ -46,7 +53,7 @@ body {
 	}
 
 	.feature-table-content {
-		max-height: 250px;
+		height: 200px;
 		overflow: auto;	
 
 		li:hover {
@@ -74,5 +81,38 @@ body {
 }
 
 #filter {
-	margin-bottom: 10px;
+	position: fixed;
+	bottom: 263px;
+	right: 20px;
+	width: 200px;
+
+	input, i {
+		float: left;
+		display: block;
+	}
+	i { 
+		margin-top: 9px;
+		margin-left: -24px;
+		color: @text-color-fade;
+	}
+}
+
+#plasmid-diagram {
+	position: fixed;
+	top: 50px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	min-width: 1000px;
+
+	svg {
+		height: 100%;
+		width: 100%;
+	}
+
+	.background {
+		fill: none;
+		stroke: black;
+		stroke-width: 2px;
+	}
 }
