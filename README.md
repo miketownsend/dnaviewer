@@ -2,11 +2,14 @@
 Browser Based Viewer of DNA
 
 ## Instructions
+
 ### Installation
 
 - Install [node.js and npm](http://nodejs.org/) (these should automatically add the node and npm to your path).
-- Install grunt to the command line tools. From the command line run `npm install -g grunt-cli`
-- Install the dev tools, run: `npm install`
+- Install grunt to the command line tools - from the command line run `npm install -g grunt-cli`
+- Install the development dependencies, run: `npm install`
+- Install bower `npm install -g bower`
+- Install the application dependencies, run: `bower install`
 
 ### Running Locally
 
