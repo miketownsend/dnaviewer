@@ -109,8 +109,6 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 			.domain([0, half_length])
 			.range([left + radius, right - radius]);
 
-		console.log(left, right);
-
 		features.forEach(function (f) {
 			var start = f.get('marker.start'),
 				end = f.get('marker.end'),
@@ -127,7 +125,6 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 
 			f.set('positionX', x);
 			f.set('positionY', y);
-			console.log(x,y);
 		});
 	}
 });

@@ -1,3 +1,7 @@
+(function () {
+
+var accessor = function (path) { return function(d) { return d.get(path); }; };
+
 App.PlasmidDiagramView = Ember.View.extend({
 	pathManager: Ember.computed.alias('controller.plasmidDiagramViewModel'),
 	molecule: Ember.computed.alias('controller.molecule'),
@@ -60,9 +64,12 @@ App.PlasmidDiagramView = Ember.View.extend({
 		var featureGroups = d3.select('g.features').selectAll('g')
 			.data(features.toArray());
 
-		featureGroups.enter()
-			.append('g')
-				.append('circle');
+		var enteredGroups = featureGroups.enter()
+			.append('g');
+
+		enteredGroups.append('image')
+			.attr('class','symbol');
+		enteredGroups.append('circle');
 
 		this.set('featureGroups', featureGroups);
 	},
@@ -70,21 +77,35 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// Updates existing feature elements in the d3 diagram.
 	updateFeatures: function () {
 		if( !this.get('hasSetupD3') ) return;
-
+		var symbolService = this.get('symbolService');
 		var pathManager = this.get('pathManager');
 		var features = this.get('features');
 		pathManager.setPositionFor(features);
 
 		var featureGroups = this.get('featureGroups');
+		featureGroups
+			.style('visibility', function(d) { 
+				return d.get('isVisible') ? "visible" : "hidden";
+			});
+			
 		featureGroups.select('circle')
 			.attr('r', 5)
 			.attr('cx', function (d) { return d.get('positionX'); })
 			.attr('cy', function (d) { return d.get('positionY'); })
 			.style('fill', function (d) {
 				return d.get('isSelected') ? 'red' : 'black';
+			});
+
+		featureGroups.select('image')
+			.attr('width', '50')
+			.attr('height', '100')
+			.attr('x', accessor('positionX'))
+			.attr('y', accessor('positionY'))
+			.attr('xlink:href', function(d) { 
+				return symbolService.getHref(d.get('symbol'));
 			})
-			.style('visibility', function(d) { 
-				return d.get('isVisible') ? "visible" : "hidden";
+			.attr('transform', function (d) {
+				return symbolService.getTransform(d.get('symbol'));
 			});
 	}.observes(
 		'features.@each.isSelected',
@@ -92,3 +113,5 @@ App.PlasmidDiagramView = Ember.View.extend({
 		'width'
 	)
 });
+
+})();
