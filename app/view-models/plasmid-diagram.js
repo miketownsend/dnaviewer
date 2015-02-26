@@ -1,27 +1,21 @@
 (function () {
 
-var margin_scale = d3.scale.linear().domain([1000,3000]).range([0, 200]);
+// Scales for managing responsiveness. Should really have one for each of the main dimensions.
+var margin_scale = d3.scale.linear().domain([1000, 3000]).range([0, 200]);
+var height_scale = d3.scale.linear().domain([720,  1080]).range([400, 800])
 
 // Plasmid Diagram View Model
 // This is a manager class for the diagram. It contains the math required to 
 // render the diagram and position elements on the diagram.
 App.PlasmidDiagramViewModel = Ember.Object.extend({
-
-	init: function () {
-		window.plasmidManager = this;
-	},
-
+	
 	// These properties control the dimensions of the diagram.
-	// "height" and "width" are updated by the view when the window size changes. 
-	// Ideally the other properties would be setup to adjust using scales as shown
-	// for margin_x. 
-	height: 1000,
-	width: 1000,
+	height: 1280,
+	width: 1720,
 	radius: 50,
-	max_height: 400,
 	padding_y: 100,
 	padding_x: 100,
-
+	
 	margin_x: function () {
 		var width = this.get('width');
 		if( width < 1000)  return 0;
@@ -29,10 +23,9 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 	}.property('width'),
 
 	effectiveHeight: function () {
-		var svg_height = this.get('height'),
-			max = this.get('max_height');
-
-		return Math.min(max, svg_height);
+		var height = this.get('height');
+		if( height < 720 ) return 400;
+		return height_scale(height);
 	}.property('height', 'max_height'),
 
 	effectiveWidth: function () {
@@ -119,12 +112,45 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 				x = scale(midpoint);
 				y = top;
 			} else {
-				x = scale(midpoint - half_length);
+				x = scale(molecule_length - midpoint);
 				y = bottom;
 			}
 
 			f.set('positionX', x);
 			f.set('positionY', y);
+		});
+	},
+
+	zoomWhenFeatureSelected: 1.3,
+	translate_x: 0,
+	translate_y: 0,
+	scale_x: 1,
+	scale_y: 1,
+	zoom_origin_x: 0,
+	zoom_origin_y: 0,
+
+	updateZoom: function (feature) {
+		var zoom = feature ? this.get('zoomWhenFeatureSelected') : 1,
+			height = this.get('height'),
+			width = this.get('width'),
+			center_x = width * 0.5,
+			center_y = height * 0.3,
+			x = feature ? feature.get('positionX') : center_x,
+			y = feature ? feature.get('positionY') : center_y;
+
+		var translate_x = width * (zoom-1) / zoom * - 0.5; 	// Translate by half the change in size to keep the svg centered after scaling.
+		translate_x += (center_x - x); 			// Adjust to center on the feature. 
+
+		var translate_y = height * (zoom-1) / zoom * - 0.5;
+		translate_y += (center_y - y);
+
+		this.setProperties({
+			translate_x: translate_x,
+			translate_y: translate_y,
+			scale_x: zoom,
+			scale_y: zoom,
+			zoom_origin_x: center_x,
+			zoom_origin_y: center_y
 		});
 	}
 });

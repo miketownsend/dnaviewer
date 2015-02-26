@@ -7,9 +7,14 @@ App.PlasmidDiagramView = Ember.View.extend({
 	molecule: Ember.computed.alias('controller.molecule'),
 	features: Ember.computed.alias('controller.featureViewModels'),
 
+
+	init: function () {
+		this._super();
+		window.plasmidDiagramView = this;
+	},
 	// This flag is used to stop observes trying to affect the DOM
 	// before the view is injected into the DOM.
-	hasSetupD3: false, 
+	isReadyForObservers: false, 
 
 	// Setup the d3 diagram when the element is injected into the dom.
 	didInsertElement: function () {
@@ -21,7 +26,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// If the features data set changes, rerun setupDiagram to reattach 
 	// data to the d3 model.
 	onDataChange: function () {
-		if( !this.get('hasSetupD3') ) return;
+		if( !this.get('isReadyForObservers') ) return;
 		Ember.run.scheduleOnce("afterRender", this, this.setupDiagram);
 	}.property('features.@each'),
 
@@ -29,15 +34,44 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// Caches the selections and attaches data to the elements.
 	setupDiagram: function () {
 		this.setupFeatures();
-		this.set('hasSetupD3', true);
+		this.setupZoom();
+		this.set('isReadyForObservers', true);
 	},
 
 	// Updates the d3 diagram.
 	updateDiagram: function () {
 		this.updateSize();
-		this.updateFeatures();
 		this.updateBackground();
+		this.updateFeatures();
+		this.updateZoom();
 	},
+
+	// Sets up a d3 selection for updating the Zoom when a feature is selected.
+	setupZoom: function () {
+		var manager = this.get('pathManager');
+		var zoomGroup = d3.select('svg g.zoom');
+		zoomGroup.datum(manager);
+		this.set('zoomGroup', zoomGroup);
+	},
+
+	// Updates the zoom data and the attributes on the zoom group element.
+	updateZoom: function () {
+		if( !this.get('isReadyForObservers')) return;
+
+		var selected = this.get('controller.selectedFeature');
+		var manager = this.get('pathManager');
+		manager.updateZoom(selected);
+
+		var transform = "scale(%@, %@) translate(%@, %@)";
+		this.get('zoomGroup')
+			.transition()
+				.duration(250)
+				.ease("out-in")
+			.attrTween('transform', function (d, i, old_transform) {
+				var new_transform = transform.fmt(d.get('scale_x'), d.get('scale_y'), d.get('translate_x'), d.get('translate_y'));
+				return d3.interpolateString(old_transform, new_transform);
+			});
+	}.observes('controller.selectedFeature'),
 
 	// Updates the background path.
 	updateBackground: function () {
@@ -58,6 +92,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 	},
 
 	// Sets up feature elements for the d3 diagram.
+	// The features content could be extracted into a mixin or reopened on another page.
 	setupFeatures: function () {
 		var features = this.get('features');
 
@@ -76,7 +111,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 
 	// Updates existing feature elements in the d3 diagram.
 	updateFeatures: function () {
-		if( !this.get('hasSetupD3') ) return;
+		if( !this.get('isReadyForObservers') ) return;
 		var symbolService = this.get('symbolService');
 		var pathManager = this.get('pathManager');
 		var features = this.get('features');
@@ -87,7 +122,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 			.style('visibility', function(d) { 
 				return d.get('isVisible') ? "visible" : "hidden";
 			});
-			
+
 		featureGroups.select('circle')
 			.attr('r', 5)
 			.attr('cx', function (d) { return d.get('positionX'); })

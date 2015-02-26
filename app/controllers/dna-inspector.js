@@ -34,6 +34,12 @@ App.DnaInspectorController = Ember.ObjectController.extend({
 	actions: {
 		// Deselect the existing selected feature and select the new feature.
 		selectFeature: function (featureViewModel, ctrlSelected) {
+			if( featureViewModel.get('isSelected') ) {
+				featureViewModel.set('isSelected', false);
+				this.set('selectedViewModel', undefined);
+				return;
+			}
+
 			var selectedFeature = this.get('selectedViewModel');
 			if( selectedFeature ) selectedFeature.set('isSelected', false);
 			featureViewModel.set('isSelected', true);

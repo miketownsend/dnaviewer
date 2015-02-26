@@ -15,7 +15,8 @@
 
 	test("Table Selection Works", function(){
 		visit('/');
-		click(".feature-table-row:first-of-type");
+		var first_row_selector = ".feature-table-row:first-of-type";
+		click(first_row_selector);
 		andThen(function(){
 			equal(
 				find('.feature-table-row.is-selected').length, 
@@ -27,6 +28,15 @@
 				"pGEX_3_primer", 
 				"Correct feature is selected in table"
 			);
+
+			click(first_row_selector);
+			andThen(function () {
+				equal(
+					find('.feature-table-row.is-visible').length, 
+					12, 
+					"Can deselect row from table click"
+				);
+			});
 		});
 	});
 })();
