@@ -30,14 +30,6 @@ module.exports = {
 			'**/*.less'
 			],
 			dest: 'tmp/app/'
-		},
-		{
-			expand: true,
-			cwd: 'app/',
-			src: [
-			'*.html',
-			],
-			dest: 'tmp/'
 		}
 		]
 	},
@@ -64,12 +56,6 @@ module.exports = {
 					'test.css',
 				],
 				dest: 'tmp/tests/'
-			},
-			{
-				expand: true,
-				cwd: 'tests/',
-				src: ['test.html'],
-				dest: 'tmp/'
 			}
 		]
 	},

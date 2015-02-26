@@ -12,14 +12,14 @@
 		<link rel="stylesheet" href="app/styles/styles.css">
 	</head>
 	<body>
-		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/jquery/dist/jquery.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<script src="bower_components/handlebars/handlebars.min.js"></script>
-		<script src="bower_components/ember/ember.min.js"></script>
+		<script src="bower_components/ember/ember.js"></script>
 		<script src="bower_components/handlebars/handlebars.js"></script>
 		<script src="bower_components/ember/ember.js"></script>
 		<script src="bower_components/ember-model/ember-model.js"></script>
-		<script src="bower_components/d3/d3.min.js"></script>
+		<script src="bower_components/d3/d3.js"></script>
 
 		<script src="app/helpers/handlebars.js"></script>
 
@@ -48,5 +48,25 @@
 		
 		<script src="app/routes/dna-inspector.js"></script>
 		<script src="app/templates.js"></script>
+
+		<!-- @ifdef TESTING -->
+		<link rel="stylesheet" href="bower_components/qunit/qunit/qunit.css">
+	    <link rel="stylesheet" href="tests/test.css">
+
+	    <script src="bower_components/qunit/qunit/qunit.js"></script>
+	    <script src="tests/test_initialiser.js"></script>
+	    <script src="tests/tests.js"></script>
+
+	    <div id="ember-testing-container">
+	      <div id="qunit"></div>
+	      <div id="qunit-fixture"></div>
+	    </div>
+
+	  	<script>
+		  	setTimeout(function () {
+		   		$('#qunit-header').on('click', function () { $('#ember-testing-container').toggleClass('minimize'); });
+		   	}, 1000);
+	  	</script>
+		<!-- @endif -->
 	</body>
 </html>

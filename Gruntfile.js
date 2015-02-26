@@ -35,7 +35,8 @@ module.exports = function( grunt ) {
 			'copy:vendor',
 			'copy:assets',
 			'concat',
-			'copy:tests'
+			'copy:tests',
+			'preprocess'
 		]);
 	});
 };

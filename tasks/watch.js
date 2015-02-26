@@ -11,7 +11,7 @@ module.exports = {
   },
   js: {
     files: ['app/**/*.js','app/*.*'],
-    tasks: ['clean:app', 'copy:app'],
+    tasks: ['clean:app', 'copy:app', 'preprocess'],
     options: {
       livereload: true,
       nospawn: true
@@ -53,7 +53,7 @@ module.exports = {
   },
   tests: {
     files: ['tests/**/*.*'],
-    tasks: ['clean:tests', 'concat', 'copy:tests'],
+    tasks: ['clean:tests', 'concat', 'copy:tests', 'preprocess'],
     options: {
       livereload: true,
       nospawn: true
