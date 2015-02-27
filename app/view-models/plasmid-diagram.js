@@ -2,7 +2,7 @@
 
 // Scales for managing responsiveness. 
 var margin_scale = d3.scale.linear().domain([1000, 3000]).range([0, 200]);
-var height_scale = d3.scale.linear().domain([720,  1080]).range([400, 800])
+var height_scale = d3.scale.linear().domain([720,  1080]).range([450, 700])
 
 // Plasmid Diagram View Model
 // This is a manager class for the diagram. It contains the math required to 
@@ -15,7 +15,8 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 	radius: 50,
 	padding_y: 100,
 	padding_x: 100,
-	
+	margin_top: 57,
+
 	margin_x: function () {
 		var width = this.get('width');
 		if( width < 1000)  return 0;
@@ -24,19 +25,19 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 
 	effectiveHeight: function () {
 		var height = this.get('height');
-		if( height < 720 ) return 400;
+		if( height < 720 ) return 450;
 		return height_scale(height);
-	}.property('height', 'max_height'),
+	}.property('height'),
 
 	effectiveWidth: function () {
 		var width = this.get('width'),
 			margin = this.get('margin_x');
 
 		return width - margin * 2;
-	}.property('height', 'max_height'),
+	}.property('width'),
 
 	pathTop: function () {
-		return this.get('padding_y');
+		return this.get('padding_y') + this.get('margin_top');
 	}.property('padding_y'),
 	
 	pathLeft: function () {
@@ -58,7 +59,7 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 			height = this.get('effectiveHeight'), 
 			padding = this.get('padding_y');
 
-		return height - top - padding;
+		return this.get('margin_top') + height - padding * 2;
 	}.property('height', 'padding_y', 'max_height'),
 
 	// Generates and SVG paths "d" attr for the background path.
@@ -151,6 +152,7 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 		});
 	},
 
+	// Properties for managing and calculating the zoom when a feature is selected.
 	zoomWhenFeatureSelected: 1.75,
 	translate_x: 0,
 	translate_y: 0,
@@ -159,6 +161,7 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 	zoom_origin_x: 0,
 	zoom_origin_y: 0,
 
+	// Update the properties used to accomplish the zoom funcationality.
 	updateZoom: function (feature) {
 		var zoom = feature ? this.get('zoomWhenFeatureSelected') : 1,
 			height = this.get('height'),

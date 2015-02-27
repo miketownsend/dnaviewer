@@ -3,13 +3,26 @@ body {
 	font-size: 12pt;
 }
 
+@brand-color-1:			rgba(0, 172, 168, 0.9);
+@brand-color-1-inverse:	white;
+@brand-color-2:			#374650;
+@brand-color-2-inverse:	white;
+
 @text-color-fade:		#aaaaaa;
-@border-width: 			1px;
-@border-color: 			#dddddd;
-@box-shadow-floating:	0 0 4px #eee;
+@border-width: 			2px;
+@border-color: 			@brand-color-1;
+@box-shadow-floating:	2px 2px 8px #ccc;
 @background-color:		rgba(254,254,254,0.9);
-@background-subtle: 	rgba(248,248,248, 0.9);
-@background-highlight: 	rgba(250,230,232, 0.9);
+@background-subtle: 	rgba(220,220,220, 0.5);
+@background-highlight: 	rgba(0,172,168, 0.5);
+
+
+.navbar-default {
+	background-color: @brand-color-1;
+}
+.navbar-default .navbar-text, .navbar-default .navbar-brand {
+	color: @brand-color-1-inverse;
+}
 
 #feature-table {
 	position: fixed;
@@ -67,7 +80,7 @@ body {
 
 	.feature-table-content {
 		position: absolute;
-		top: 31px;
+		top: 30px + @border-width;
 		bottom: 0px;
 		width: 100%;
 		overflow: auto;
@@ -91,14 +104,20 @@ body {
 }
 
 #filter {
+
 	right: 0px;
 	width: 200px;
 
 	input, i {
 		float: left;
 		display: block;
-		background-color: @background-color;
 	}
+
+	input {
+		background-color: @background-color;
+		border: @border-width solid @border-color;
+	}
+
 	i { 
 		margin-top: 9px;
 		margin-left: -24px;
@@ -108,7 +127,7 @@ body {
 
 #plasmid-diagram {
 	position: fixed;
-	top: 50px;
+	top: 0px;
 	left: 0;
 	right: 0;
 	bottom: 0;
