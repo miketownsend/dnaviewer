@@ -1,1 +1,0 @@
-App.FeatureDetailsController = App.FeatureController.extend();

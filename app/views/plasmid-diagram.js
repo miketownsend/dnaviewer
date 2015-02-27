@@ -1,14 +1,21 @@
 (function () {
 
+// D3 Helpers
+// Should be generalised for use in multiple views.
 var accessor = function (path) { return function(d) { return d.get(path); }; };
+var translate = function (x,y) { return function (d) { return "translate(%@,%@) ".fmt( d.get(x) || 0 , d.get(y) || 0 ); }; };
+var scale = function (x,y) { return function (d) { return "scale(%@,%@) ".fmt(d.get(x) || 1,d.get(y) || 1) }; };
 
 App.PlasmidDiagramView = Ember.View.extend({
 	dnamolecule: Ember.computed.alias('controller.dnamolecule'),
 	features: Ember.computed.alias('controller.featureViewModels'),
 
-	pathManager: function () {
+	// Layout manager contains dimensions + helpers for determining the 
+	// layout of different elements of the diagram.
+	layoutManager: function () {
 		return App.PlasmidDiagramViewModel.create({
-			dnamolecule: this.get('dnamolecule')
+			dnamolecule: this.get('dnamolecule'),
+			features: this.get('features')
 		});
 	}.property(),
 
@@ -45,10 +52,21 @@ App.PlasmidDiagramView = Ember.View.extend({
 		this.updateFeatures();
 		this.updateZoom();
 	},
+	
+	// Updates the height and width of the path manager so that 
+	// it can update the size of the 
+	updateSize: function () {
+		var svg = $('svg');
+		var layoutManager = this.get('layoutManager');
+		layoutManager.setProperties({
+			height: svg.innerHeight(),
+			width: svg.innerWidth()
+		});
+	},
 
 	// Sets up a d3 selection for updating the Zoom when a feature is selected.
 	setupZoom: function () {
-		var manager = this.get('pathManager');
+		var manager = this.get('layoutManager');
 		var zoomGroup = d3.select('svg g.zoom');
 		zoomGroup.datum(manager);
 		this.set('zoomGroup', zoomGroup);
@@ -59,36 +77,24 @@ App.PlasmidDiagramView = Ember.View.extend({
 		if( !this.get('isReadyForObservers')) return;
 
 		var selected = this.get('controller.selectedFeature');
-		var manager = this.get('pathManager');
+		var manager = this.get('layoutManager');
 		manager.updateZoom(selected);
 
-		var transform = "scale(%@, %@) translate(%@, %@)";
 		this.get('zoomGroup')
 			.transition()
 				.duration(250)
 				.ease("out-in")
 			.attrTween('transform', function (d, i, old_transform) {
-				var new_transform = transform.fmt(d.get('scale_x'), d.get('scale_y'), d.get('translate_x'), d.get('translate_y'));
+				var new_transform = scale('scale_x', 'scale_y')(d) + translate('translate_x', 'translate_y')(d);
 				return d3.interpolateString(old_transform, new_transform);
 			});
 	}.observes('controller.selectedFeature'),
 
 	// Updates the background path.
 	updateBackground: function () {
-		var pathManager = this.get('pathManager');
+		var layoutManager = this.get('layoutManager');
 		d3.select('path')
-			.attr('d', pathManager.generateBackgroundPath());
-	},
-
-	// Updates the height and width of the path manager so that 
-	// it can update the size of the 
-	updateSize: function () {
-		var svg = $('svg');
-		var pathManager = this.get('pathManager');
-		pathManager.setProperties({
-			height: svg.innerHeight(),
-			width: svg.innerWidth()
-		});
+			.attr('d', layoutManager.generateBackgroundPath());
 	},
 
 	// Sets up feature elements for the d3 diagram.
@@ -102,9 +108,10 @@ App.PlasmidDiagramView = Ember.View.extend({
 		var enteredGroups = featureGroups.enter()
 			.append('g');
 
-		enteredGroups.append('image')
-			.attr('class','symbol');
+		enteredGroups.append('image').attr('class','symbol');
 		enteredGroups.append('circle');
+		enteredGroups.append('text').attr('class', 'name');
+
 
 		this.set('featureGroups', featureGroups);
 	},
@@ -112,13 +119,15 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// Updates existing feature elements in the d3 diagram.
 	updateFeatures: function () {
 		if( !this.get('isReadyForObservers') ) return;
-		
+
 		var symbolService = this.get('symbolService');
-		var pathManager = this.get('pathManager');
-		var features = this.get('features');
-		pathManager.setPositionFor(features);
+		var layoutManager = this.get('layoutManager');
+		layoutManager.updateFeaturePositions();
+		layoutManager.updateFeatureLabelPositions();
 
 		var featureGroups = this.get('featureGroups');
+		featureGroups.attr('transform', translate('positionX', 'positionY'));
+
 		featureGroups
 			.style('visibility', function(d) { 
 				return d.get('isVisible') ? "visible" : "hidden";
@@ -126,23 +135,31 @@ App.PlasmidDiagramView = Ember.View.extend({
 
 		featureGroups.select('circle')
 			.attr('r', 5)
-			.attr('cx', function (d) { return d.get('positionX'); })
-			.attr('cy', function (d) { return d.get('positionY'); })
+			.attr('cx', 0)
+			.attr('cy', 0)
 			.style('fill', function (d) {
 				return d.get('isSelected') ? 'red' : 'black';
 			});
 
 		featureGroups.select('image')
-			.attr('width', '50')
-			.attr('height', '100')
-			.attr('x', accessor('positionX'))
-			.attr('y', accessor('positionY'))
+			.attr('width', 50)
+			.attr('height', 100)
+			.attr('x', 0)
+			.attr('y', 0)
 			.attr('xlink:href', function(d) { 
 				return symbolService.getHref(d.get('symbol'));
 			})
 			.attr('transform', function (d) {
-				return symbolService.getTransform(d.get('symbol'));
+				var symbol_slug = d.get('symbol');
+				if( !symbol_slug ) return "";
+				var transform = symbolService.getTransform(symbol_slug, d.get('isTop'));
+				return transform;
 			});
+
+		featureGroups.select('text')
+			.attr('transform', translate('labelPositionX', 'labelPositionY'))
+			.text(accessor('marker.dnafeature.name'));
+
 	}.observes(
 		'features.@each.isSelected',
 		'features.@each.isVisible',

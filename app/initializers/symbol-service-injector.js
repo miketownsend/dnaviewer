@@ -1,3 +1,4 @@
+// Inject the symbol service into the view.
 Ember.Application.initializer({
   name: "symbolServiceInjector",
   initialize: function(container, application) {

@@ -1,6 +1,6 @@
 (function () {
 
-// Scales for managing responsiveness. Should really have one for each of the main dimensions.
+// Scales for managing responsiveness. 
 var margin_scale = d3.scale.linear().domain([1000, 3000]).range([0, 200]);
 var height_scale = d3.scale.linear().domain([720,  1080]).range([400, 800])
 
@@ -8,7 +8,7 @@ var height_scale = d3.scale.linear().domain([720,  1080]).range([400, 800])
 // This is a manager class for the diagram. It contains the math required to 
 // render the diagram and position elements on the diagram.
 App.PlasmidDiagramViewModel = Ember.Object.extend({
-	
+
 	// These properties control the dimensions of the diagram.
 	height: 1280,
 	width: 1720,
@@ -89,8 +89,9 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 	},
 
 	// Sets the position of all features on the path.
-	setPositionFor: function (features) {
+	updateFeaturePositions: function () {
 		var molecule_length = this.get('dnamolecule.length'),
+			features = this.get('features'),
 			top = this.get('pathTop'),
 			bottom = this.get('pathBottom'),
 			left = this.get('pathLeft'),
@@ -123,8 +124,34 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 			f.set('positionY', y);
 		});
 	},
+	
+	sortedTopFeatures: function () {
+		var features = this.get('features'),
+			topFeatures = features.filterBy('isTop', true),
+			sortedFeatures = topFeatures.sortBy('marker.start');
 
-	zoomWhenFeatureSelected: 1.3,
+		return sortedFeatures;
+	}.property('features.@each'), 
+
+	sortedBottomFeatures: function () {
+		var features = this.get('features'),
+			bottomFeatures = features.filterBy('isTop', false),
+			sortedFeatures = bottomFeatures.sortBy('marker.start');
+		return sortedFeatures;
+	}.property('features.@each', 'width'),
+
+	// Determines the position of each features label.
+	updateFeatureLabelPositions: function () {
+		this.get('sortedTopFeatures').forEach(function (feature,i) {
+			feature.set('labelPositionY', i%2 ? 15 : 26);
+		});
+
+		this.get('sortedBottomFeatures').forEach(function (feature,i) {
+			feature.set('labelPositionY', i%2 ? -15 : -26);
+		});
+	},
+
+	zoomWhenFeatureSelected: 1.75,
 	translate_x: 0,
 	translate_y: 0,
 	scale_x: 1,
@@ -137,7 +164,7 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 			height = this.get('height'),
 			width = this.get('width'),
 			center_x = width * 0.5,
-			center_y = height * 0.3,
+			center_y = height * 0.35,
 			x = feature ? feature.get('positionX') : center_x,
 			y = feature ? feature.get('positionY') : center_y;
 
