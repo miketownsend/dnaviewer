@@ -1,3 +1,4 @@
+// Feature Controller can be extended for controllers working with features.
 App.FeatureController = Ember.ObjectController.extend({
 	needs: ["dna-inspector"],
 	actions: {

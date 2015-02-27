@@ -25,9 +25,19 @@ App.PlasmidDiagramView = Ember.View.extend({
 
 	// Setup the d3 diagram when the element is injected into the dom.
 	didInsertElement: function () {
+		// Get d3 selection scoped to the view.
+		var d3view = d3.select("#" + this.get('elementId'));
+		this.set('_d3view', d3view);
+
 		$(window).resize($.proxy(this.updateDiagram, this));
 		this.setupDiagram();
 		this.updateDiagram();
+	},
+
+	// Ease of access helper for scoping selections to this view.
+	_d3view: null,
+	d3: function () {
+		return this.get('_d3view');
 	},
 
 	// If the features data set changes, rerun setupDiagram to reattach 
@@ -56,7 +66,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// Updates the height and width of the path manager so that 
 	// it can update the size of the 
 	updateSize: function () {
-		var svg = $('svg');
+		var svg = $('#' + this.get('elementId') + ' svg');
 		var layoutManager = this.get('layoutManager');
 		layoutManager.setProperties({
 			height: svg.innerHeight(),
@@ -67,7 +77,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// Sets up a d3 selection for updating the Zoom when a feature is selected.
 	setupZoom: function () {
 		var manager = this.get('layoutManager');
-		var zoomGroup = d3.select('svg g.zoom');
+		var zoomGroup = this.d3().select('svg g.zoom');
 		zoomGroup.datum(manager);
 		this.set('zoomGroup', zoomGroup);
 	},
@@ -93,7 +103,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// Updates the background path.
 	updateBackground: function () {
 		var layoutManager = this.get('layoutManager');
-		d3.select('path')
+		this.d3().select('path')
 			.attr('d', layoutManager.generateBackgroundPath());
 	},
 
@@ -101,8 +111,10 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// The features content could be extracted into a mixin or reopened on another page.
 	setupFeatures: function () {
 		var features = this.get('features');
+		var controller = this.get('controller');
 
-		var featureGroups = d3.select('g.features').selectAll('g')
+		// Ideally we should scope all the selectors to the view.
+		var featureGroups = this.d3().select('g.features').selectAll('g')
 			.data(features.toArray());
 
 		var enteredGroups = featureGroups.enter()
@@ -112,6 +124,18 @@ App.PlasmidDiagramView = Ember.View.extend({
 		enteredGroups.append('circle');
 		enteredGroups.append('text').attr('class', 'name');
 
+		// Select the feature by clicking on one of the features elements.
+		var clickableElements = featureGroups.selectAll('image, text, circle');
+		clickableElements.on('click', function (d) {
+			controller.send("toggleSelection", d);
+			d3.event.preventDefault();
+		});
+
+		// Deselect on a click on the svg. 
+		this.d3().select('svg').on('click', function () {
+			if( d3.event.defaultPrevented ) return;
+			controller.send('toggleSelection');
+		});
 
 		this.set('featureGroups', featureGroups);
 	},
@@ -142,6 +166,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 			});
 
 		featureGroups.select('image')
+			.attr('visibility', function (d) { return !!d.get('symbol') ? 'visible' : 'hidden'; })
 			.attr('width', 50)
 			.attr('height', 100)
 			.attr('x', 0)

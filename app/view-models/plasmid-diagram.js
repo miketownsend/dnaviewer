@@ -9,7 +9,9 @@ var height_scale = d3.scale.linear().domain([720,  1080]).range([450, 700])
 // render the diagram and position elements on the diagram.
 App.PlasmidDiagramViewModel = Ember.Object.extend({
 
-	// These properties control the dimensions of the diagram.
+	// These properties control the dimensions of the diagram. There are a bunch of magic more
+	// magic numbers throughout the layout manager which should be consolidated here (including)
+	// the scales above.
 	height: 1280,
 	width: 1720,
 	radius: 50,
@@ -62,7 +64,10 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 		return this.get('margin_top') + height - padding * 2;
 	}.property('height', 'padding_y', 'max_height'),
 
-	// Generates and SVG paths "d" attr for the background path.
+	// Generates and SVG paths "d" attr for the background path. This should really be
+	// a computed property as it only really changes when the window size (height/width)
+	// but is currently calculated ever time. Potentially there are some cool libraries
+	// to make this easier as well.
 	generateBackgroundPath: function () {
 		var r = this.get('radius'),
 			top = this.get('pathTop'),
@@ -153,6 +158,8 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 	},
 
 	// Properties for managing and calculating the zoom when a feature is selected.
+	// In the view I directly set the layout manager as the datum point for the 
+	// zoom element to simply update from here.
 	zoomWhenFeatureSelected: 1.75,
 	translate_x: 0,
 	translate_y: 0,
@@ -167,12 +174,17 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 			height = this.get('height'),
 			width = this.get('width'),
 			center_x = width * 0.5,
-			center_y = height * 0.35,
+			center_y = height * 0.38,
 			x = feature ? feature.get('positionX') : center_x,
 			y = feature ? feature.get('positionY') : center_y;
-
-		var translate_x = width * (zoom-1) / zoom * - 0.5; 	// Translate by half the change in size to keep the svg centered after scaling.
-		translate_x += (center_x - x); 			// Adjust to center on the feature. 
+ 		
+ 		// Translate by half the change in size to keep the svg centered after scaling.
+		var translate_x = width * (zoom-1) / zoom * - 0.5;
+		
+		// Adjust to center on the feature. Ideally this would be weighted against the
+		// so that the adjustment doesnt center the features near the edge leaving heaps
+		// of white space.
+		translate_x += (center_x - x); 						
 
 		var translate_y = height * (zoom-1) / zoom * - 0.5;
 		translate_y += (center_y - y);
