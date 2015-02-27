@@ -1,8 +1,6 @@
-body {
-	font-family: calibri;
-	font-size: 12pt;
-}
-
+/* TODO: Seperate out the LESS into different files for each component, 
+   TODO: Setup the bootstrap LESS files to be merged in. */
+   
 @brand-color-1:			rgba(0, 172, 168, 0.9);
 @brand-color-1-inverse:	white;
 @brand-color-2:			#374650;
@@ -17,9 +15,20 @@ body {
 @background-highlight: 	rgba(0,172,168, 0.5);
 
 
+body {
+	font-family: calibri;
+	font-size: 12pt;
+}
+
+
+nav.navbar {
+	box-shadow: @box-shadow-floating;
+}
+
 .navbar-default {
 	background-color: @brand-color-1;
 }
+
 .navbar-default .navbar-text, .navbar-default .navbar-brand {
 	color: @brand-color-1-inverse;
 }

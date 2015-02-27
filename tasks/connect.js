@@ -1,5 +1,3 @@
-var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
-
 module.exports = {
     options: {
 	hostname: 'localhost',

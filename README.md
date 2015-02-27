@@ -33,7 +33,8 @@ aspects of the diagram but they will still essentially be controlled by the same
 Features can be selected from the table and can be filtered. The dna-inspector controller maintains the view models for the features and controls selection / filtering. Other controllers reference this controller and use the view models. This keeps everything bound together without polluting the model classes.
 
 Some other components I would implement if I had a sweet job at Desktop Genetics:
-- Show another panel with the details of the selected feature, and allow the user to edit them (I was unsure what details to show and what should be editable).
-- Show more information directly on the diagram. It would be interesting to find out what the users find interesting and what they would like to see.
-- Click + drag & scroll to zoom control from the mouse so the user can explore the diagram without using the features.
-- Add a minimize button on all the floating panels (table / future detail widget).
+
+-	Show another panel with the details of the selected feature, and allow the user to edit them (I was unsure what details to show and what should be editable).
+-	Show more information directly on the diagram. It would be interesting to find out what the users find interesting and what they would like to see.
+-	Click + drag & scroll to zoom control from the mouse so the user can explore the diagram without using the features.
+-	Add a minimize button on all the floating panels (table / future detail widget).
