@@ -6,7 +6,7 @@ App.FeatureController = Ember.ObjectController.extend({
 		},
 		toggleSelection: function () {
 			var dnaInspectorController = this.get('controllers.dna-inspector');
-			dnaInspectorController.send('selectFeature', this.get('model'), false);
+			dnaInspectorController.send('toggleSelectionFor', this.get('model'), false);
 		}
 	}
 });

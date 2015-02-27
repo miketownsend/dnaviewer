@@ -6,7 +6,8 @@ body {
 @text-color-fade:		#aaaaaa;
 @border-width: 			1px;
 @border-color: 			#dddddd;
-@background-color:		rgba(255,255,255,0.9);
+@box-shadow-floating:	0 0 4px #eee;
+@background-color:		rgba(254,254,254,0.9);
 @background-subtle: 	rgba(248,248,248, 0.9);
 @background-highlight: 	rgba(250,230,232, 0.9);
 
@@ -14,9 +15,16 @@ body {
 	position: fixed;
 	right: 20px;
 	bottom: 20px;
+
+	height: 40%;
+	max-height: 600px;
+
 	width: 60%;
 	min-width: 800px;
+
 	background-color: @background-color;
+	box-shadow: @box-shadow-floating;
+	border-radius: 4px;
 
 	ul {
 		border-radius: 4px;
@@ -48,47 +56,48 @@ body {
 		width: 200px;
 	}
 
-	li.is-selected {
-		background-color: @background-highlight;
+	.feature-table-wrapper {
+		border: @border-width solid @border-color;
+		border-radius: 4px;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+		position: relative;
 	}
 
 	.feature-table-content {
-		height: 200px;
-		overflow: auto;	
+		position: absolute;
+		top: 31px;
+		bottom: 0px;
+		width: 100%;
+		overflow: auto;
 
 		li:hover {
 			background-color: @background-highlight;
 		}
 	}
 	
-	.feature-table-wrapper {
-		border: @border-width solid @border-color;
-		border-radius: 4px;
-	}
-
 	.feature-table-header li {
 		font-weight: 600;
 		border-bottom: @border-width solid @border-color;
 	}
 }
 
-#feature-details {
-	textarea {
-		width: 100%;
-		height: 200px;
-		border-color: @border-color;
-	}
+.table-control {
+	position: absolute;
+	top: -40px;
+	box-shadow: @box-shadow-floating;
+	border-radius: 4px;
 }
 
 #filter {
-	position: fixed;
-	bottom: 263px;
-	right: 20px;
+	right: 0px;
 	width: 200px;
 
 	input, i {
 		float: left;
 		display: block;
+		background-color: @background-color;
 	}
 	i { 
 		margin-top: 9px;

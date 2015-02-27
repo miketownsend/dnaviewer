@@ -21,29 +21,53 @@ App.DnaInspectorController = Ember.ObjectController.extend({
 	// Checks features against the filter and toggles the visibility of the view
 	// model if the feature if the filter doesnt match.
 	filterViewModels: function () {
+		var self = this;
 		var filter = this.get('filter');
 		var features = this.get('featureViewModels');
 
-		features.forEach(function (featureViewModel) {
-			if( !filter ) featureViewModel.set('isVisible', true);
-			var name = featureViewModel.get('marker.dnafeature.name').toLowerCase();
-			featureViewModel.set('isVisible', name.indexOf(filter.toLowerCase()) != -1);
+		features.forEach(function (feature) {
+			if( !filter ) feature.set('isVisible', true);
+			var name = feature.get('marker.dnafeature.name').toLowerCase();
+			var isFiltered = name.indexOf(filter.toLowerCase()) != -1;
+			feature.set('isVisible', isFiltered);
+			if( feature.get('isSelected') && !isFiltered ) self.toggleSelectionFor();
 		});
+
+		// Select single feature if its the only one visible.
+		var visibleFeatures = features.filterProperty('isVisible');
+		if( visibleFeatures && visibleFeatures.get('length') == 1 ) {
+			var featureToSelect = visibleFeatures.objectAt(0);
+			if( !featureToSelect.get('isSelected') ) this.toggleSelectionFor(featureToSelect);
+		}
+
+		// If the user has cleared the filter, deselect any selected features.
+		if( !filter ) {
+			this.toggleSelectionFor();
+		}
 	}.observes('filter'),
 
-	actions: {
-		// Deselect the existing selected feature and select the new feature.
-		selectFeature: function (featureViewModel, ctrlSelected) {
-			if( featureViewModel.get('isSelected') ) {
-				featureViewModel.set('isSelected', false);
+	// Manage the selected element
+	toggleSelectionFor: function (feature) {	
+			// Deselect feature if it is already selected
+			if(feature && feature.get('isSelected')) {
+				feature.set('isSelected', false);
 				this.set('selectedViewModel', undefined);
 				return;
 			}
 
+			// Deselect existing selected feature.
 			var selectedFeature = this.get('selectedViewModel');
 			if( selectedFeature ) selectedFeature.set('isSelected', false);
-			featureViewModel.set('isSelected', true);
-			this.set('selectedViewModel', featureViewModel);
+
+			// Select feature if it is not selected already.
+			if( feature ) feature.set('isSelected', true);
+			this.set('selectedViewModel', feature);
+	},
+
+	actions: {
+		// Deselect the existing selected feature and select the new feature.
+		toggleSelectionFor: function (featureViewModel) {
+			this.toggleSelectionFor(featureViewModel);
 		}
 	}
 });

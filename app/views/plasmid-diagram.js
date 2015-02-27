@@ -3,15 +3,15 @@
 var accessor = function (path) { return function(d) { return d.get(path); }; };
 
 App.PlasmidDiagramView = Ember.View.extend({
-	pathManager: Ember.computed.alias('controller.plasmidDiagramViewModel'),
-	molecule: Ember.computed.alias('controller.molecule'),
+	dnamolecule: Ember.computed.alias('controller.dnamolecule'),
 	features: Ember.computed.alias('controller.featureViewModels'),
 
+	pathManager: function () {
+		return App.PlasmidDiagramViewModel.create({
+			dnamolecule: this.get('dnamolecule')
+		});
+	}.property(),
 
-	init: function () {
-		this._super();
-		window.plasmidDiagramView = this;
-	},
 	// This flag is used to stop observes trying to affect the DOM
 	// before the view is injected into the DOM.
 	isReadyForObservers: false, 
@@ -112,6 +112,7 @@ App.PlasmidDiagramView = Ember.View.extend({
 	// Updates existing feature elements in the d3 diagram.
 	updateFeatures: function () {
 		if( !this.get('isReadyForObservers') ) return;
+		
 		var symbolService = this.get('symbolService');
 		var pathManager = this.get('pathManager');
 		var features = this.get('features');

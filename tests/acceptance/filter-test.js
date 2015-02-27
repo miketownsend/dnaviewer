@@ -47,4 +47,25 @@
 			);
 		});
 	});
+
+	test("Filter selection works", function(){
+		visit('/');
+		fillIn(filter_selector, "pGEX");
+		andThen(function(){
+			equal(
+				find('.feature-table-row.is-selected span:nth-child(2)').text().trim(),
+				"pGEX_3_primer",
+				"Correct feature is selected when it is the only filtered result"
+			);
+
+			fillIn(filter_selector, "");
+			andThen(function () {
+				equal(
+					find('.feature-table-row.is-selected').length,
+					0,
+					"No Features are selected"
+				);
+			});
+		});
+	});
 })();

@@ -105,17 +105,20 @@ App.PlasmidDiagramViewModel = Ember.Object.extend({
 		features.forEach(function (f) {
 			var start = f.get('marker.start'),
 				end = f.get('marker.end'),
-				midpoint = start + (end - start)/2,
+				midpoint = start + (end - start)/2, 
+				isTop = midpoint < half_length,
 				x, y;
 
-			if( midpoint < half_length ) {
+			if( isTop ) {
 				x = scale(midpoint);
 				y = top;
 			} else {
 				x = scale(molecule_length - midpoint);
 				y = bottom;
-			}
 
+			}
+			
+			f.set('isTop', isTop);
 			f.set('positionX', x);
 			f.set('positionY', y);
 		});
