@@ -166,7 +166,10 @@ App.PlasmidDiagramView = Ember.View.extend({
 			});
 
 		featureGroups.select('image')
-			.attr('visibility', function (d) { return !!d.get('symbol') ? 'visible' : 'hidden'; })
+			.attr('visibility', function (d) { 
+				if( !d.get('symbol') ) return false;				
+				return d.get('isVisible') ? 'visible' : 'hidden';
+			})
 			.attr('width', 50)
 			.attr('height', 100)
 			.attr('x', 0)
