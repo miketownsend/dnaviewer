@@ -2,8 +2,8 @@
   "name": "dnaviewer",
   "dependencies": {
     "d3": "~3.4.*",
-    "handlebars": "~1.3.0",
-    "jquery": "^1.11.1",
+    "handlebars": "1.3.0",
+    "jquery": "1.11.1",
     "ember": "1.8.1",
     "ember-model": "0.0.14"
   },
